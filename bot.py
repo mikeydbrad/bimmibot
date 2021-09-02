@@ -1,4 +1,5 @@
 import discord
+import os
 
 client = discord.Client()
 
@@ -9,9 +10,22 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.author == client.user:
-        return
+        return # enures we don't respond to self
 
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
+        
+@client.event
+async def on_error(event, *args, **kwargs):
+    with open('err.log', 'a') as f:
+        if event == 'on_message':
+            f.write(f'Unhandled message: {args[0]}\n')
+        else:
+            raise
 
-client.run('NTM2MzM3NzMzMTk5NzI0NTY0.DyVZ_w.2ld9xQAnXpsB6rj3ovKG59KkX88')
+
+# loading .env file for the TOKEN key
+from dotenv import load_dotenv
+load_dotenv()
+
+client.run(os.getenv('TOKEN'))
