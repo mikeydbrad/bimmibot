@@ -1,40 +1,39 @@
 import discord
-import os
+import json
 
 from discord.ext import commands
 
 bot = discord.Client()
-bot = commands.Bot(command_prefix='!')
+
+# find the .json, store the contents, close it
+json_file = open("config.json")
+config = json.load(json_file)
+json_file.close()
+
+# set prefix to whats in the config.json file
+bot = commands.Bot(command_prefix=config['prefix'])
 
 @bot.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
 
+# load each invidivual command
 bot.load_extension('fun.8ball')
+bot.load_extension('fun.cat')
+bot.load_extension('fun.dog')
 
+# check if any commands apply
 @bot.event
 async def on_message(message):
+  # TODO add a check if the message starts with commandprefix
   await bot.process_commands(message)
-  if message.author == bot.user:
-    return # enures we don't respond to self
 
-  if message.content.startswith('$hello'):
-    await message.channel.send('Hello!')
-
-  #if message.content.startswirth(bot.command_prefix + '8ball'):
-    
-        
 @bot.event
 async def on_error(event, *args, **kwargs):
-  with open('err.log', 'a') as f:
+  with open('error.log', 'a') as f:
     if event == 'on_message':
       f.write(f'Unhandled message: {args[0]}\n')
     else:
       raise
 
-
-# loading .env file for the TOKEN key
-from dotenv import load_dotenv
-load_dotenv()
-
-bot.run(os.getenv('TOKEN'))
+bot.run(config['token'])
