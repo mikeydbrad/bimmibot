@@ -1,4 +1,4 @@
-# bimmibot - discord.js
+# bimmibot - discord.py
 
 https://github.com/mikeydbrad/bimmibot
 
