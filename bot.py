@@ -21,6 +21,7 @@ async def on_ready():
 bot.load_extension('fun.8ball')
 bot.load_extension('fun.cat')
 bot.load_extension('fun.dog')
+bot.load_extension('utility.poll')
 
 # check if any commands apply
 @bot.event
