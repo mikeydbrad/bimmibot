@@ -40,6 +40,12 @@ def setup(bot):
   bot.add_command(command_name)
 ```
 
+## python modules needed
+```
+$ pip install _____
+requests
+```
+
 # useful links
 
 [Discord.py Documentation](https://discordpy.readthedocs.io/en/latest/index.html#)  
