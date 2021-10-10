@@ -1,7 +1,10 @@
 from discord.ext import commands
 import random
 
-@commands.command(name='8ball')
+@commands.command(
+  name='8ball',
+  brief='Fate decides your query',
+  help='Fate decides your query')
 async def eightball(ctx):
   options = [
     # affirmative responses

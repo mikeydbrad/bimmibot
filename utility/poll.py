@@ -1,6 +1,9 @@
 from discord.ext import commands
 
-@commands.command()
+@commands.command(
+  brief='Adds reactions for voting yes/no/maybe',
+  help='Adds reactions for voting yes/no/maybe'
+)
 async def poll(ctx):
   # code here
   await ctx.message.add_reaction('👍')
