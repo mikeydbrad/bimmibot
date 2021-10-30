@@ -31,7 +31,10 @@ labelled `to-do` for things that are in development. Feel free to suggest your o
 ```python
 from discord.ext import commands
 
-@commands.command()
+@commands.command(
+  brief='',
+  help=''
+)
 async def command_name(ctx):
   # code here
   await ctx.send(response)
