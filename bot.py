@@ -22,6 +22,7 @@ bot.load_extension('fun.8ball')
 bot.load_extension('fun.cat')
 bot.load_extension('fun.dog')
 bot.load_extension('utility.poll')
+bot.load_extension('utility.trivia')
 
 # check if any commands apply
 @bot.event
