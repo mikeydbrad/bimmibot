@@ -4,7 +4,7 @@ from discord.ext import commands
   brief='',
   help=''
 )
-async def role(ctx, user : discord.Member, *, role : discord.Role):
+async def role(ctx, user : self.Member, *, role : self.Role):
   if role.position > ctx.author.top_role.position: #if the role is above users top role it sends error
     return await ctx.send('**:x: | That role is above your top role!**') 
   if role in user.roles:
