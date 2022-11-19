@@ -46,6 +46,8 @@ def setup(bot):
 
 ## python modules needed
 ```
+py -3 -m pip install -U discord.py
+
 $ pip install _____
 requests
 ```

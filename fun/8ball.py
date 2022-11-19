@@ -1,3 +1,4 @@
+from unicodedata import name
 from discord.ext import commands
 import random
 
@@ -31,7 +32,9 @@ async def eightball(ctx):
     'Outlook not so good.',
     'Very doubtful.',
   ]
-  await ctx.send(random.choice(options))
+  choice = random.choice(options)
+  await ctx.send(choice)
+  #print(commands.command.name + 'resulted in ' + choice)
 
 def setup(bot):
   bot.add_command(eightball)
