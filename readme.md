@@ -1,3 +1,4 @@
+run bot with "python3 bot.py"
 # bimmibot - discord.py
 
 https://github.com/mikeydbrad/bimmibot
