@@ -9,7 +9,11 @@ guide for the basic layout and setup of the bot.
 Check the [issues](https://github.com/mikeydbrad/bimmibot/issues) 
 labelled `to-do` for things that are in development. Feel free to suggest your own via the `enhancement` label!
 
-
+Referenced the following:
+ - [linuxboi bot.py](https://github.com/TrackRunny/LinuxBoi/blob/master/LinuxBoi.py)
+ - [linuxboi example cog file](https://github.com/TrackRunny/LinuxBoi/blob/master/cogs/Fun.py)
+ - TODO: reference [this template](https://github.com/MoonlightCapital/discord-py-template) for further improvements
+ - [collection of bots](https://github.com/topics/discord-py-bot)
 
 ## config.json setup
 ```json
