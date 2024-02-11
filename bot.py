@@ -22,15 +22,9 @@ bot = commands.Bot(
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
     
-    await bot.load_extension('fun.8ball')
-    await bot.load_extension('fun.cat')
-    await bot.load_extension('fun.dog')
-    # await bot.load_extension('fun.insult')
-    # await bot.load_extension('fun.roll')
-
-    await bot.load_extension('utility.poll')
-    # await bot.load_extension('utility.role')
-    await bot.load_extension('utility.trivia')
+    await bot.load_extension('cogs.fun')
+    await bot.load_extension('cogs.utility')
+    await bot.load_extension('cogs.tarkov')
 
 # @bot.event
 # async def on_error(event, *args, **kwargs):
