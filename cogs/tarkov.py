@@ -12,6 +12,56 @@ greaterorequal = '\u2265'
 # practice queries here https://api.tarkov.dev/
 # example bot on github https://github.com/Mateusz-Latka/Fence-Flea-Market-Keeper/blob/main/bot.py
 
+class Tarkov(commands.Cog):
+  def __init__(self, bot):
+    self.bot = bot
+
+  @commands.command()
+  async def tarkov(self, ctx, arg):
+    try:
+      item_data = get_item_data(arg)
+      item_name = item_data['shortName']
+      print(item_name)
+      item_price = item_data['avg24hPrice']
+      item_icon = item_data['iconLink']
+      item_wiki_link = item_data['wikiLink']
+      item_dev_link = item_data['link']
+      item_types = item_data['types']
+      item_width = item_data['width']
+      item_height = item_data['height']
+      item_update = item_data['updated']
+
+      # TODO fix date, format from API results in something like "2024-02-11T01:52:35.000Z"
+      # date = datetime.fromisoformat(item_update)
+      # formatted_date = date.strftime("%d %B %Y, %H:%M:%S")
+
+      slots = item_width*item_height
+      price_perslot = item_price//slots
+      slots1 = "slots"
+      format_price = format(item_price,',')
+      format_priceperslot = format(price_perslot, ',')
+      if slots == 1:
+        slots1 = "slot"
+      button_wiki = Button(label="Wiki", style=discord.ButtonStyle.green, url=item_wiki_link)
+      button_dev = Button(label="Dev", style=discord.ButtonStyle.green, url=item_dev_link)
+      view = View()
+      view.add_item(button_wiki)
+      view.add_item(button_dev)
+      embed = discord.Embed(title=f"{item_name}", color=get_color(price_perslot))
+      embed.set_thumbnail(url=item_icon)
+      embed.add_field(name="Price:", value=f' > {format_price}{currency}\n > (lowest price)', inline=True)
+      embed.add_field(name="Per Slot:", value=f' > {format_priceperslot}{currency}\n > ({slots} {slots1})', inline=True)
+      embed.add_field(name="Tier:", value=get_tier(price_perslot), inline=False)
+      # embed.add_field(name="Last update:", value=formatted_date, inline=False)
+      embed.set_footer(text="Data povided by: https://tarkov.dev/api/")
+      await ctx.send(embed=embed, view=view)
+    except Exception as e:
+      embed = discord.Embed(title="Error", description=str(e), color=0xFF0000)
+      await ctx.send(embed=embed)
+
+async def setup(bot):
+  await bot.add_cog(Tarkov(bot))
+  
 def run_tarkov_dev_query(query):
   headers = {"Content-Type": "application/json"}
   response = requests.post('https://api.tarkov.dev/graphql', headers=headers, json={"query": query})
@@ -81,53 +131,3 @@ def get_color(search):
         return 0xFF0000
     else:
         return 0x800000
-
-class Tarkov(commands.Cog):
-  def __init__(self, bot):
-    self.bot = bot
-
-  @commands.command()
-  async def tarkov(self, ctx, arg):
-    try:
-      item_data = get_item_data(arg)
-      item_name = item_data['shortName']
-      print(item_name)
-      item_price = item_data['avg24hPrice']
-      item_icon = item_data['iconLink']
-      item_wiki_link = item_data['wikiLink']
-      item_dev_link = item_data['link']
-      item_types = item_data['types']
-      item_width = item_data['width']
-      item_height = item_data['height']
-      item_update = item_data['updated']
-
-      # TODO fix date, format from API results in something like "2024-02-11T01:52:35.000Z"
-      # date = datetime.fromisoformat(item_update)
-      # formatted_date = date.strftime("%d %B %Y, %H:%M:%S")
-
-      slots = item_width*item_height
-      price_perslot = item_price//slots
-      slots1 = "slots"
-      format_price = format(item_price,',')
-      format_priceperslot = format(price_perslot, ',')
-      if slots == 1:
-        slots1 = "slot"
-      button_wiki = Button(label="Wiki", style=discord.ButtonStyle.green, url=item_wiki_link)
-      button_dev = Button(label="Dev", style=discord.ButtonStyle.green, url=item_dev_link)
-      view = View()
-      view.add_item(button_wiki)
-      view.add_item(button_dev)
-      embed = discord.Embed(title=f"{item_name}", color=get_color(price_perslot))
-      embed.set_thumbnail(url=item_icon)
-      embed.add_field(name="Price:", value=f' > {format_price}{currency}\n > (lowest price)', inline=True)
-      embed.add_field(name="Per Slot:", value=f' > {format_priceperslot}{currency}\n > ({slots} {slots1})', inline=True)
-      embed.add_field(name="Tier:", value=get_tier(price_perslot), inline=False)
-      # embed.add_field(name="Last update:", value=formatted_date, inline=False)
-      embed.set_footer(text="Data povided by: https://tarkov.dev/api/")
-      await ctx.send(embed=embed, view=view)
-    except Exception as e:
-      embed = discord.Embed(title="Error", description=str(e), color=0xFF0000)
-      await ctx.send(embed=embed)
-
-async def setup(bot):
-  await bot.add_cog(Tarkov(bot))
