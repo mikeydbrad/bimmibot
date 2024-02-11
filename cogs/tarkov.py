@@ -21,7 +21,6 @@ class Tarkov(commands.Cog):
     try:
       item_data = get_item_data(arg)
       item_name = item_data['shortName']
-      print(item_name)
       item_price = item_data['avg24hPrice']
       item_icon = item_data['iconLink']
       item_wiki_link = item_data['wikiLink']
@@ -42,11 +41,13 @@ class Tarkov(commands.Cog):
       format_priceperslot = format(price_perslot, ',')
       if slots == 1:
         slots1 = "slot"
+      
       button_wiki = Button(label="Wiki", style=discord.ButtonStyle.green, url=item_wiki_link)
       button_dev = Button(label="Dev", style=discord.ButtonStyle.green, url=item_dev_link)
       view = View()
       view.add_item(button_wiki)
       view.add_item(button_dev)
+      
       embed = discord.Embed(title=f"{item_name}", color=get_color(price_perslot))
       embed.set_thumbnail(url=item_icon)
       embed.add_field(name="Price:", value=f' > {format_price}{currency}\n > (lowest price)', inline=True)
@@ -54,17 +55,21 @@ class Tarkov(commands.Cog):
       embed.add_field(name="Tier:", value=get_tier(price_perslot), inline=False)
       # embed.add_field(name="Last update:", value=formatted_date, inline=False)
       embed.set_footer(text="Data povided by: https://tarkov.dev/api/")
+      
       await ctx.send(embed=embed, view=view)
+      print(f"Successful embed displayed for Item '{arg}'.")
     except Exception as e:
       embed = discord.Embed(title="Error", description=str(e), color=0xFF0000)
       await ctx.send(embed=embed)
+      print(f"Failed to display embed for Item '{arg}'. Reason: '{e}'")
 
 async def setup(bot):
   await bot.add_cog(Tarkov(bot))
   
-def run_tarkov_dev_query(query):
+def run_tarkov_dev_query(query, search):
   headers = {"Content-Type": "application/json"}
   response = requests.post('https://api.tarkov.dev/graphql', headers=headers, json={"query": query})
+  print(f"Checking https://tarkov.dev for Item '{search}'. Please wait...")
   return response.json()
 
 def get_item_data(search):
@@ -85,22 +90,24 @@ def get_item_data(search):
   """
   
   try:
-    result = run_tarkov_dev_query(query)
+    result = run_tarkov_dev_query(query, search)
     items = result['data']['items']
     
     if not items:
       raise ValueError(f"Item '{search}' not found in the database.")
+    else:
+      print(f"Item '{search}' was found in the database. Processing...")
 
     item_data = items[0]
     return {
       'shortName': item_data['shortName'],
       'avg24hPrice': item_data['avg24hPrice'],
       'iconLink': item_data['iconLink'],
-      'wikiLink': item_data['wikiLink'],
-      'link': item_data['link'],
+      'wikiLink': item_data['wikiLink'],        # tarkov wiki link
+      'link': item_data['link'],                # tarkov.dev link
       'types': item_data['types'],
-      'width': item_data['width'],
-      'height': item_data['height'],
+      'width': item_data['width'],              # how many inv slots wide
+      'height': item_data['height'],            # how many inv slots tall
       'updated': item_data['updated']
     }
   except requests.exceptions.RequestException as e:
@@ -110,15 +117,15 @@ def get_item_data(search):
 
 def get_tier(search):
     if search >= 40000:
-        return ':star:Legendary'
+        return ':star: Legendary'
     elif search >= 30000:
-        return ':green_circle:Great'
+        return ':green_circle: Great'
     elif search >= 20000:
-        return ':yellow_circle:Average'
+        return ':yellow_circle: Average'
     elif search >= 10000:
-        return ':red_circle:Poor'
+        return ':red_circle: Poor'
     else:
-        return ':x:Trash'  
+        return ':x: Trash'  
 
 def get_color(search):
     if search >= 40000:
