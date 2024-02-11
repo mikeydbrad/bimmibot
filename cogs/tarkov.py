@@ -8,6 +8,10 @@ import requests
 currency = "\u20BD"
 greaterorequal = '\u2265'
 
+# uses https://tarkov.dev/api/
+# practice queries here https://api.tarkov.dev/
+# example bot on github https://github.com/Mateusz-Latka/Fence-Flea-Market-Keeper/blob/main/bot.py
+
 def run_tarkov_dev_query(query):
   headers = {"Content-Type": "application/json"}
   response = requests.post('https://api.tarkov.dev/graphql', headers=headers, json={"query": query})
@@ -97,8 +101,9 @@ class Tarkov(commands.Cog):
       item_height = item_data['height']
       item_update = item_data['updated']
 
-      date = datetime.fromisoformat(item_update)
-      formatted_date = date.strftime("%d %B %Y, %H:%M:%S")
+      # TODO fix date, format from API results in something like "2024-02-11T01:52:35.000Z"
+      # date = datetime.fromisoformat(item_update)
+      # formatted_date = date.strftime("%d %B %Y, %H:%M:%S")
 
       slots = item_width*item_height
       price_perslot = item_price//slots
@@ -117,7 +122,7 @@ class Tarkov(commands.Cog):
       embed.add_field(name="Price:", value=f' > {format_price}{currency}\n > (lowest price)', inline=True)
       embed.add_field(name="Per Slot:", value=f' > {format_priceperslot}{currency}\n > ({slots} {slots1})', inline=True)
       embed.add_field(name="Tier:", value=get_tier(price_perslot), inline=False)
-      embed.add_field(name="Last update:", value=formatted_date, inline=False)
+      # embed.add_field(name="Last update:", value=formatted_date, inline=False)
       embed.set_footer(text="Data povided by: https://tarkov.dev/api/")
       await ctx.send(embed=embed, view=view)
     except Exception as e:
