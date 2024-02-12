@@ -11,6 +11,7 @@ greaterorequal = '\u2265'
 # uses https://tarkov.dev/api/
 # practice queries here https://api.tarkov.dev/
 # example bot on github https://github.com/Mateusz-Latka/Fence-Flea-Market-Keeper/blob/main/bot.py
+# here is a huge tarkov open source resource list https://github.com/the-hideout
 
 class Tarkov(commands.Cog):
   def __init__(self, bot):
