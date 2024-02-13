@@ -1,6 +1,6 @@
 from discord.ext import commands
 from discord.ui import Button, View
-from datetime import datetime
+from datetime import datetime # TODO is this necessary
 
 import discord
 import requests
@@ -17,8 +17,9 @@ class Tarkov(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
 
+  # query API for stats of item, and display links + price + price/slot
   @commands.command()
-  async def tarkov(self, ctx, arg):
+  async def flea(self, ctx, arg):
     try:
       item_data = get_item_data(arg)
       item_name = item_data['shortName']
@@ -54,7 +55,7 @@ class Tarkov(commands.Cog):
       embed.add_field(name="Price:", value=f' > {format_price}{currency}\n > (lowest price)', inline=True)
       embed.add_field(name="Per Slot:", value=f' > {format_priceperslot}{currency}\n > ({slots} {slots1})', inline=True)
       embed.add_field(name="Tier:", value=get_tier(price_perslot), inline=False)
-      # embed.add_field(name="Last update:", value=formatted_date, inline=False)
+      # embed.add_field(name="Last update:", value=formatted_date, inline=False) # TODO related to above date fix
       embed.set_footer(text="Data povided by: https://tarkov.dev/api/")
       
       await ctx.send(embed=embed, view=view)
@@ -64,15 +65,18 @@ class Tarkov(commands.Cog):
       await ctx.send(embed=embed)
       print(f"Failed to display embed for Item '{arg}'. Reason: '{e}'")
 
+# Add Tarkov cog to bot
 async def setup(bot):
   await bot.add_cog(Tarkov(bot))
   
+# Helper functions for flea cmd
 def run_tarkov_dev_query(query, search):
   headers = {"Content-Type": "application/json"}
   response = requests.post('https://api.tarkov.dev/graphql', headers=headers, json={"query": query})
   print(f"Checking https://tarkov.dev for Item '{search}'. Please wait...")
   return response.json()
 
+# Helper functions for flea cmd
 def get_item_data(search):
   query = f""" 
   {{
@@ -116,6 +120,7 @@ def get_item_data(search):
   except (KeyError, IndexError):
     raise Exception("Failed to parse the API response.")
 
+# Helper function for flea cmd
 def get_tier(search):
     if search >= 40000:
         return ':star: Legendary'
@@ -128,6 +133,7 @@ def get_tier(search):
     else:
         return ':x: Trash'  
 
+# Helper function for flea cmd
 def get_color(search):
     if search >= 40000:
         return 0xFF8C00
