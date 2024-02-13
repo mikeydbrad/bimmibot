@@ -12,8 +12,7 @@ class Utility(commands.Cog):
   async def poll(self, ctx, *args):
     print(args)
     for x in args:
-      # supposed to capture emojis in msg to use as custom reaction emojis
-      # TODO doesn't work
+      # TODO supposed to capture emojis in msg to use as custom reaction emojis - doesnt work
       emoji = get(ctx.message.guild.emojis, name=x)
       if emoji != None:
         await ctx.message.add_reaction(emoji)
